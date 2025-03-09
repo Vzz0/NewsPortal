@@ -1,0 +1,10 @@
+<!-- templates/news/news_detail.html -->
+{% extends 'default.html' %}
+
+{% block content %}
+    <h2>{{ news_item.title }}</h2>
+    <p>Дата: {{ news_item.created_at|date:"d.m.Y" }}</p>
+    <div class="content">
+        {{ news_item.content|linebreaks }}
+    </div>
+{% endblock %}

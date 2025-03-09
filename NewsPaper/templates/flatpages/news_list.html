@@ -1,0 +1,14 @@
+{% extends 'default.html' %}
+
+{% block content %}
+    <h2>Список новостей</h2>
+    {% for news in news_list %}
+        <div class="news-item">
+            <h3><a href="{% url 'news_detail' news.pk %}">{{ news.title }}</a></h3>
+            <p>Дата: {{ news.created_at|date:"d.m.Y" }}</p>
+            <p>{{ news.content|truncatechars:100 }}</p>
+        </div>
+    {% empty %}
+        <p>Нет новостей.</p>
+    {% endfor %}
+{% endblock %}

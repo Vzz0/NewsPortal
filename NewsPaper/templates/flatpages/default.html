@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>News Portal</title>
+</head>
+<body>
+    <header>
+        <h1>Новостной портал</h1>
+        <nav>
+            <a href="{% url 'news_list' %}">Все новости</a>
+        </nav>
+    </header>
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer>
+        <p>© 2025 News Portal</p>
+    </footer>
+</body>
+</html>

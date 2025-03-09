@@ -48,7 +48,7 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        return f"{self.content[:124]}"
+        return f"{self.content[:124]}..."
 
     def __str__(self):
         return self.title
