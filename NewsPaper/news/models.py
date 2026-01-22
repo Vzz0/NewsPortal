@@ -18,6 +18,7 @@ class Author(models.Model):
         return self.user.username
 
 class Category(models.Model):
+    objects = None
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
