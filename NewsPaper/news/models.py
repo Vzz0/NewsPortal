@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 from django.utils.timezone import now
 
 class Author(models.Model):
@@ -32,7 +33,7 @@ class Post(models.Model):
         (NEWS, 'Новость')
     ]
 
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, blank=True)
     type = models.CharField(max_length=1, choices=POST_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
     categories = models.ManyToManyField(Category, through='PostCategory')
@@ -50,6 +51,9 @@ class Post(models.Model):
 
     def preview(self):
         return f"{self.content[:124]}..."
+
+    def get_absolute_url(self):
+        return reverse('news_detail', args=[str(self.id)])
 
     def __str__(self):
         return self.title

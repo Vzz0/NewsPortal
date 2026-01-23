@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+<h2>Удалить {% if object.type == 'A' %}статью{% else %}новость{% endif %}?</h2>
+<p>Вы уверены, что хотите удалить "{{ object.title }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Да, удалить</button>
+</form>
+<a href="{% url 'news_detail' object.pk %}">← Отмена</a>
+{% endblock %}

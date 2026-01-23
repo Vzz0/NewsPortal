@@ -7,4 +7,7 @@
         {{ news_item.content|censor|linebreaks }}
     </div>
 <a href="{% url 'news_list' %}">← Назад к списку</a>
-{% endblock %}
+<p>
+    <a href="{% url 'news_search' %}">← Назад к поиску</a>
+</p>
+    {% endblock %}

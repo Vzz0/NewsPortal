@@ -1,0 +1,29 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_tags %}
+
+{% block content %}
+
+<h2>Поиск новостей</h2>
+
+<!-- Форма поиска -->
+<form method="get">
+    {{ form.as_p }}
+    <button type="submit">Найти</button>
+</form>
+
+<hr>
+
+<!-- Результаты -->
+{% if news_list %}
+    {% for news in news_list %}
+        <div class="news-item">
+            <h3><a href="{% url 'news_detail' news.pk %}">{{ news.title }}</a></h3>
+            <p>Дата: {{ news.created_at|date:"d.m.Y" }}</p>
+            <p>{{ news.content|truncatechars:20 }}</p>
+        </div>
+    {% empty %}
+        <p>Новостей не найдено.</p>
+    {% endfor %}
+{% endif %}
+
+{% endblock %}

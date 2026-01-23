@@ -1,0 +1,10 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+<h2>{% if 'article' in request.path %}Создать статью{% else %}Создать новость{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+<a href="{% url 'news_list' %}">← Назад</a>
+{% endblock %}
