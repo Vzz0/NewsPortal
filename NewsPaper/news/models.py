@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.utils.timezone import now
+
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

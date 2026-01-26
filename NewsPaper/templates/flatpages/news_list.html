@@ -4,7 +4,15 @@
 {% load custom_tags %}
 
 {% block content %}
-<h2>Список новостей</h2>
+
+    <!-- КНОПКА "Мой профиль" -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'user_profile' %}"
+           style="display: inline-block; background: #007bff; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; margin-bottom: 15px;">
+            👤 Мой профиль
+        </a>
+    {% endif %}
+    <h2>Список новостей</h2>
     {% for news in news_list %}
         <div class="news-item">
             <h3><a href="{% url 'news_detail' news.pk %}">{{ news.title|censor }}</a></h3>

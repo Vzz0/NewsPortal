@@ -1,13 +1,35 @@
+from django.contrib.auth.models import Group
+from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Author
-from .forms import NewsSearchForm , PostForm
-from django.urls import reverse_lazy
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Post
+from .forms import NewsSearchForm, PostForm
 
+
+@login_required
+def user_profile(request):
+    user_display = request.user.get_full_name() or request.user.username or request.user.email
+    is_author = request.user.groups.filter(name='authors').exists()
+    return render(request, 'user_profile.html', {
+        'user_display': user_display,
+        'is_author': is_author
+    })
+@login_required
+def upgrade_to_author(request):
+    authors_group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        authors_group.user_set.add(request.user)
+        messages.success(request, 'Вы успешно стали автором')
+    else:
+        messages.info(request, 'Вы уже являетесь автором.')
+    return redirect('user_profile')
 
 
 class NewsListView(ListView):
     model = Post
-    template_name = 'flatpages/news_list.html'  # Шаблон для списка новостей
+    template_name = 'flatpages/news_list.html'
     context_object_name = 'news_list'
     paginate_by = 10
 
@@ -16,7 +38,7 @@ class NewsListView(ListView):
 
 class NewsDetailView(DetailView):
     model = Post
-    template_name = 'flatpages/news_detail.html'  # Шаблон для детальной страницы
+    template_name = 'flatpages/news_detail.html'
     context_object_name = 'news_item'
 
 class NewsSearchView(ListView):
@@ -55,54 +77,35 @@ from .models import Post, Author
 from .forms import PostForm
 
 
-class NewsCreateView(CreateView):
+class PostCreateView(PermissionRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'post_create.html'
-    success_url = reverse_lazy('news_list')
+    permission_required = 'news.add_post'
+
+    def get_success_url(self):
+        return reverse_lazy('news_list')
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        post.type = Post.NEWS
-        if self.request.user.is_authenticated:
-            author, _ = Author.objects.get_or_create(user=self.request.user)
-            post.author = author
+        if self.request.path.startswith('/news/'):
+            post.type = Post.NEWS
+        elif self.request.path.startswith('/articles/'):
+            post.type = Post.ARTICLE
+        else:
+            raise ValueError('Invalid post type')
         return super().form_valid(form)
 
-class NewsUpdateView(UpdateView):
+class PostUpdateView(PermissionRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'post_edit.html'
-    success_url = reverse_lazy('news_list')
+    permission_required = 'news.change_post'
 
-class NewsDeleteView(DeleteView):
-    model = Post
-    template_name = 'post_delete.html'
-    success_url = reverse_lazy('news_list')
+    def get_success_url(self):
+        return reverse_lazy('news_detail', kwargs={'pk': self.object.pk})
 
-
-class ArticleCreateView(CreateView):
-    model = Post
-    form_class = PostForm
-    template_name = 'post_create.html'
-    success_url = reverse_lazy('news_list')
-
-    def form_valid(self, form):
-        post = form.save(commit=False)
-        post.type = Post.ARTICLE
-        if self.request.user.is_authenticated:
-            author, _ = Author.objects.get_or_create(user=self.request.user)
-            post.author = author
-        post.save()
-        return super().form_valid(form)
-
-class ArticleUpdateView(UpdateView):
-    model = Post
-    form_class = PostForm
-    template_name = 'post_edit.html'
-    success_url = reverse_lazy('news_list')
-
-class ArticleDeleteView(DeleteView):
+class PostDeleteView(DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('news_list')
