@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from .views import NewsListView, NewsDetailView, NewsSearchView, PostDeleteView, PostUpdateView, PostCreateView
 from . import views
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:pk>/delete/', PostDeleteView.as_view(), name='news_delete'),
     path('profile/', views.user_profile, name='user_profile'),
     path('profile/upgrade/', views.upgrade_to_author, name='upgrade_to_author'),
+    path('subscribe/<int:category_id>/', views.subscribe, name='subscribe'),
     ]

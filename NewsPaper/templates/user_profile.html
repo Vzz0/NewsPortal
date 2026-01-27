@@ -1,36 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Профиль пользователя</title>
-</head>
-<body>
-    <h1><a href="{% url 'news_list' %}">На Главную</a></h1>
-    <h2>Страница авторизованного пользователя {{ user_display }}</h2>
-    <p>Здесь может содержаться персональная информация для каждого пользователя</p>
+{% extends 'flatpages/default.html' %}
 
-    <div>
-        <a href="{% url 'account_logout' %}" style="margin-right: 10px;">
-            Выйти
-        </a>
+{% block content %}
+    <h2>Страница авторизованного пользователя {{ user_display }}</h2>
+    <p>Здесь может содержаться персональная информация.</p>
+
+    {% if user.is_authenticated %}
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <a href="{% url 'account_logout' %}" class="btn btn-secondary">Выйти</a>
+        </form>
 
         {% if not is_author %}
-            <a href="{% url 'upgrade_to_author' %}">
-                Хочу Premium!
-            </a>
+            <a href="{% url 'upgrade_to_author' %}">Хочу Premium!</a>
         {% else %}
-            <span style="color: green; margin-left: 10px;">Вы — автор ✅</span>
+            <span>Вы — автор ✅</span>
         {% endif %}
-    </div>
-
-    {% if messages %}
-        <div style="margin-top: 20px;">
-            {% for message in messages %}
-                <div style="padding: 10px; background: #007bff; color: white;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
     {% endif %}
-</body>
-</html>
+{% endblock %}

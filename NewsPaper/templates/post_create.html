@@ -4,6 +4,13 @@
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
     <button type="submit">Сохранить</button>
 </form>
 <a href="{% url 'news_list' %}">← Назад</a>

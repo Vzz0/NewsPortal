@@ -10,4 +10,12 @@
 <p>
     <a href="{% url 'news_search' %}">← Назад к поиску</a>
 </p>
-    {% endblock %}
+{% if news_item.categories.all %}
+    {% for cat in news_item.categories.all %}
+        <form method="post" action="{% url 'subscribe' cat.id %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" style="font-size: 0.8em;">Подписаться на "{{ cat.name }}"</button>
+        </form>
+    {% endfor %}
+{% endif %}
+{% endblock %}

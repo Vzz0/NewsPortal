@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Активация аккаунта</title>
+</head>
+<body>
+    <h2>Привет, {{ user.username }}!</h2>
+    <p>Спасибо за регистрацию на нашем новостном портале!</p>
+    <p>Пожалуйста, подтвердите свой email, перейдя по ссылке:</p>
+    <p>
+        <a href="{{ activate_url }}" style="padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">
+            Активировать аккаунт
+        </a>
+    </p>
+    <p>Если вы не регистрировались — просто проигнорируйте это письмо.</p>
+</body>
+</html>

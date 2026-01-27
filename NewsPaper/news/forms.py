@@ -24,7 +24,7 @@ class NewsSearchForm(forms.Form):
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = Post  # ← ЭТА СТРОКА ОБЯЗАТЕЛЬНА!
+        model = Post
         fields = ['title', 'content', 'categories']
         widgets = {
             'categories': forms.CheckboxSelectMultiple(),
