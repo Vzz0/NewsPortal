@@ -71,6 +71,13 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+CELERY_BROKER_URL = 'redis://default:MXfAUiZh1WiAR6hOzqmx3WwduVish34P@redis-17524.c16.us-east-1-3.ec2.cloud.redislabs.com:17524/0'
+CELERY_RESULT_BACKEND = 'redis://default:MXfAUiZh1WiAR6hOzqmx3WwduVish34P@redis-17524.c16.us-east-1-3.ec2.cloud.redislabs.com:17524/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/news/'
 LOGOUT_REDIRECT_URL = '/news/'

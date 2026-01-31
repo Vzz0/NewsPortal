@@ -5,7 +5,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
-from news.jobs import send_weekly_digest
+#from news.jobs import send_weekly_digest
 
 logger = logging.getLogger(__name__)
 
@@ -21,13 +21,13 @@ class Command(BaseCommand):
         scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
-        scheduler.add_job(
-            send_weekly_digest,
-            trigger=CronTrigger(day_of_week="sun", hour="08", minute="00"),
-            id="send_weekly_digest",
-            max_instances=1,
-            replace_existing=True,
-        )
+        #scheduler.add_job(
+        #    send_weekly_digest,
+        #    trigger=CronTrigger(day_of_week="sun", hour="08", minute="00"),
+        #    id="send_weekly_digest",
+        #    max_instances=1,
+        #    replace_existing=True,
+        #   )
 
         scheduler.add_job(
             delete_old_job_executions,
