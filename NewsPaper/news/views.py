@@ -11,7 +11,7 @@ from django.conf import settings
 from .models import Post, Category, Author
 from .forms import NewsSearchForm, PostForm
 from django.utils import timezone
-
+from django.core.cache import cache
 class NewsListView(ListView):
     model = Post
     template_name = 'flatpages/news_list.html'
@@ -26,6 +26,12 @@ class NewsDetailView(DetailView):
     model = Post
     template_name = 'flatpages/news_detail.html'
     context_object_name = 'news_item'
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs['pk']}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs['pk']}', obj)
+        return obj
 
 
 class NewsSearchView(ListView):
@@ -158,6 +164,12 @@ def upgrade_to_author(request):
 @login_required
 def subscribe(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    if request.user not in category.subscribers.all():
-        category.subscribers.add(request.user)
+
+    if request.method == 'POST':
+        if request.user not in category.subscribers.all():
+            category.subscribers.add(request.user)
+            messages.success(request, f'Вы подписались на категорию "{category.name}"')
+        else:
+            messages.info(request, f'Вы уже подписаны на категорию "{category.name}"')
+
     return redirect(request.META.get('HTTP_REFERER', 'news_list'))

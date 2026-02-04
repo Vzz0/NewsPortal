@@ -1,10 +1,10 @@
 {% extends 'flatpages/default.html' %}
 {% load custom_filters %}
 {% block content %}
-    <h2>{{ news_item.title|censor }}</h2>
+    <h2>{{ news_item.title|hide_forbidden }}</h2>
     <p>Дата: {{ news_item.created_at|date:"d.m.Y" }}</p>
     <div class="content">
-        {{ news_item.content|censor|linebreaks }}
+        {{ news_item.content|hide_forbidden|linebreaks }}
     </div>
 <a href="{% url 'news_list' %}">← Назад к списку</a>
 <p>

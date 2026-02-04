@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 
+from click import style
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +49,12 @@ EMAIL_HOST_PASSWORD = 'ydsbvgviiqmzugmr'
 EMAIL_USE_SSL = True
 DEFAULT_FROM_EMAIL ='ishimovamir@yandex.com'
 
+ADMINS = [
+    ('Admin', 'amirishimov8@gmail.com'),
+]
+
+SERVER_EMAIL = 'amirishimov8@gmail.com'
+
 # формат даты
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25 #seconds
@@ -85,10 +93,10 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['username*', 'email*', 'password1*', 'password2*']
 ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_FORMS = {'signup': 'news.forms.CommonSignupForm'}
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ROOT_URLCONF = 'NewsPaper.urls'
 
@@ -168,3 +176,155 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+    }
+}
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'style': '{',
+
+    'formatters': {
+        'console_basic': {
+            'format': '{asctime} [{levelname}] {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'console_warning': {
+            'format': '{asctime} [{levelname}] {pathname}\n{message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'console_error': {
+            'format': '{asctime} [{levelname}] {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'general': {
+            'format': '{asctime} [{levelname}] [{module}] {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'errors': {
+            'format': '{asctime} [{levelname}] {message}\nPath: {pathname}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'security': {
+            'format': '{asctime} [{levelname}] [{module}] {message}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+        'email': {
+            'format': '{asctime} [{levelname}] {message}\nPath: {pathname}',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+            'style': '{',
+        },
+    },
+
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+    },
+
+    'handlers': {
+        'console_debug': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'console_basic',
+            'filters': ['require_debug_true'],
+        },
+        'console_warning': {
+            'class': 'logging.StreamHandler',
+            'level': 'WARNING',
+            'formatter': 'console_warning',
+            'filters': ['require_debug_true'],
+        },
+        'console_error': {
+            'class': 'logging.StreamHandler',
+            'level': 'ERROR',
+            'formatter': 'console_error',
+            'filters': ['require_debug_true'],
+        },
+        'general_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'formatter': 'general',
+            'filename': os.path.join(LOGS_DIR, 'general.log'),
+            'maxBytes': 10485760,
+            'backupCount': 5,
+            'encoding': 'utf-8',
+            'filters': ['require_debug_false'],
+        },
+        'errors_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'ERROR',
+            'formatter': 'errors',
+            'filename': os.path.join(LOGS_DIR, 'errors.log'),
+            'maxBytes': 10485760,
+            'backupCount': 5,
+            'encoding': 'utf-8',
+        },
+        'security_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'formatter': 'security',
+            'filename': os.path.join(LOGS_DIR, 'security.log'),
+            'maxBytes': 10485760,
+            'backupCount': 5,
+            'encoding': 'utf-8',
+        },
+        'mail_admins': {
+            'class': 'django.utils.log.AdminEmailHandler',
+            'level': 'ERROR',
+            'formatter': 'email',
+            'filters': ['require_debug_false'],
+            'include_html': True,
+        },
+    },
+
+    'loggers': {
+        'django': {
+            'handlers': ['console_debug', 'console_warning', 'console_error', 'general_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['errors_file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['errors_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['errors_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['security_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
